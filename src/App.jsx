@@ -222,7 +222,7 @@ function App() {
     try {
       const compliantPassword = generateCompliantPassword();
       // 1. Register owner account
-      const res = await api.post('/auth/register', {
+      const res = await api.post('/auth/users', {
         fullName: ownerData.fullName,
         email: ownerData.email,
         phone: ownerData.phone,
