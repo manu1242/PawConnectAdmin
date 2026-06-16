@@ -13,6 +13,7 @@ import StoresPage from './pages/Stores';
 import BookingsPage from './pages/Bookings';
 import AuditLogsPage from './pages/AuditLogs';
 import PermissionsPage from './pages/Permissions';
+import PromosPage from './pages/Promos';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('admin_token') || null);
@@ -33,6 +34,7 @@ function App() {
   const [stores, setStores] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [auditLogs, setAuditLogs] = useState([]);
+  const [promos, setPromos] = useState([]);
 
   // Loaders & Alerts
   const [loading, setLoading] = useState(false);
@@ -73,6 +75,12 @@ function App() {
       const logsRes = await api.get('/auth/audit-logs');
       if (logsRes.data.success && logsRes.data.data?.logs) {
         setAuditLogs(logsRes.data.data.logs);
+      }
+
+      // Fetch promo codes
+      const promosRes = await api.get('/promos/admin');
+      if (promosRes.data.success && promosRes.data.data?.promos) {
+        setPromos(promosRes.data.data.promos);
       }
     } catch (err) {
       console.error('Failed to load real data from backend:', err);
@@ -295,6 +303,63 @@ function App() {
     showAlert('success', 'Bookings CSV report generated successfully!');
   };
 
+  // Action: Create Promo Code
+  const handleCreatePromo = async (promoData) => {
+    try {
+      const res = await api.post('/promos', promoData);
+      if (res.data.success) {
+        showAlert('success', 'Promo code created successfully!');
+        loadDatabaseData();
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert('danger', err.response?.data?.message || 'Failed to create promo code.');
+    }
+  };
+
+  // Action: Update Promo Code
+  const handleUpdatePromo = async (id, promoData) => {
+    try {
+      const res = await api.put(`/promos/${id}`, promoData);
+      if (res.data.success) {
+        showAlert('success', 'Promo code updated successfully!');
+        loadDatabaseData();
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert('danger', err.response?.data?.message || 'Failed to update promo code.');
+    }
+  };
+
+  // Action: Toggle Promo Active Status
+  const handleTogglePromoActive = async (id) => {
+    try {
+      const res = await api.patch(`/promos/${id}/toggle`);
+      if (res.data.success) {
+        showAlert('success', res.data.message || 'Promo status toggled!');
+        loadDatabaseData();
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert('danger', 'Failed to toggle promo status.');
+    }
+  };
+
+  // Action: Delete Promo Code
+  const handleDeletePromo = async (id) => {
+    if (!window.confirm('Are you sure you want to permanently delete this promo code?')) return;
+    try {
+      const res = await api.delete(`/promos/${id}`);
+      if (res.data.success) {
+        showAlert('success', 'Promo code deleted successfully.');
+        loadDatabaseData();
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert('danger', 'Failed to delete promo code.');
+    }
+  };
+
   // Computed platform statistics
   const computeStats = () => {
     const pendingStoresCount = stores.filter(s => s.status === 'pending').length;
@@ -415,6 +480,17 @@ function App() {
               bookingFilter={bookingFilter}
               setBookingFilter={setBookingFilter}
               onExport={handleExport}
+            />
+          )}
+
+          {activeTab === 'promos' && (
+            <PromosPage
+              promos={promos}
+              stores={stores}
+              onCreatePromo={handleCreatePromo}
+              onUpdatePromo={handleUpdatePromo}
+              onTogglePromoActive={handleTogglePromoActive}
+              onDeletePromo={handleDeletePromo}
             />
           )}
 
