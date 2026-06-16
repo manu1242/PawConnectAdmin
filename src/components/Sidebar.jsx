@@ -7,7 +7,8 @@ import {
   ShieldCheck, 
   Settings, 
   LogOut,
-  Tag
+  Tag,
+  Image
 } from 'lucide-react';
 
 function Sidebar({ activeTab, setActiveTab, onLogout, userRole, onRoleSwitch }) {
@@ -17,6 +18,7 @@ function Sidebar({ activeTab, setActiveTab, onLogout, userRole, onRoleSwitch }) 
     { id: 'stores', name: 'Store Control', icon: Store },
     { id: 'bookings', name: 'Bookings Manager', icon: Calendar },
     { id: 'promos', name: 'Promo Codes', icon: Tag },
+    { id: 'banners', name: 'Home Banners', icon: Image },
     { id: 'audit', name: 'Audit Logs', icon: ShieldCheck },
     { id: 'permissions', name: 'Roles & Permissions', icon: Settings },
   ];

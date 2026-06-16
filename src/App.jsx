@@ -14,6 +14,7 @@ import BookingsPage from './pages/Bookings';
 import AuditLogsPage from './pages/AuditLogs';
 import PermissionsPage from './pages/Permissions';
 import PromosPage from './pages/Promos';
+import BannersPage from './pages/Banners';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('admin_token') || null);
@@ -35,6 +36,7 @@ function App() {
   const [bookings, setBookings] = useState([]);
   const [auditLogs, setAuditLogs] = useState([]);
   const [promos, setPromos] = useState([]);
+  const [banners, setBanners] = useState([]);
 
   // Loaders & Alerts
   const [loading, setLoading] = useState(false);
@@ -81,6 +83,12 @@ function App() {
       const promosRes = await api.get('/promos/admin');
       if (promosRes.data.success && promosRes.data.data?.promos) {
         setPromos(promosRes.data.data.promos);
+      }
+
+      // Fetch home banners
+      const bannersRes = await api.get('/banners');
+      if (bannersRes.data.success && bannersRes.data.data?.banners) {
+        setBanners(bannersRes.data.data.banners);
       }
     } catch (err) {
       console.error('Failed to load real data from backend:', err);
@@ -357,6 +365,63 @@ function App() {
     } catch (err) {
       console.error(err);
       showAlert('danger', 'Failed to delete promo code.');
+    }
+  };
+
+  // Action: Create Home Banner
+  const handleCreateBanner = async (bannerData) => {
+    try {
+      const res = await api.post('/banners', bannerData);
+      if (res.data.success) {
+        showAlert('success', 'Home banner created successfully!');
+        loadDatabaseData();
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert('danger', err.response?.data?.message || 'Failed to create home banner.');
+    }
+  };
+
+  // Action: Update Home Banner
+  const handleUpdateBanner = async (id, bannerData) => {
+    try {
+      const res = await api.put(`/banners/${id}`, bannerData);
+      if (res.data.success) {
+        showAlert('success', 'Home banner updated successfully!');
+        loadDatabaseData();
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert('danger', err.response?.data?.message || 'Failed to update home banner.');
+    }
+  };
+
+  // Action: Toggle Home Banner Active
+  const handleToggleBannerActive = async (id) => {
+    try {
+      const res = await api.patch(`/banners/${id}/toggle`);
+      if (res.data.success) {
+        showAlert('success', res.data.message || 'Home banner status toggled!');
+        loadDatabaseData();
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert('danger', err.response?.data?.message || 'Failed to toggle home banner status.');
+    }
+  };
+
+  // Action: Delete Home Banner
+  const handleDeleteBanner = async (id) => {
+    if (!window.confirm('Are you sure you want to permanently delete this home banner?')) return;
+    try {
+      const res = await api.delete(`/banners/${id}`);
+      if (res.data.success) {
+        showAlert('success', 'Home banner deleted successfully.');
+        loadDatabaseData();
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert('danger', 'Failed to delete home banner.');
     }
   };
 
