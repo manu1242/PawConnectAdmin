@@ -17,6 +17,7 @@ function UsersPage({
   const [newOwnerEmail, setNewOwnerEmail] = useState('');
   const [newOwnerPhone, setNewOwnerPhone] = useState('');
   const [newStoreName, setNewStoreName] = useState('');
+  const [businessType, setBusinessType] = useState('store');
 
   // Edit states
   const [showEditModal, setShowEditModal] = useState(false);
@@ -32,12 +33,14 @@ function UsersPage({
       fullName: newOwnerName,
       email: newOwnerEmail,
       phone: newOwnerPhone,
-      storeName: newStoreName
+      storeName: newStoreName,
+      businessType: businessType
     });
     setNewOwnerName('');
     setNewOwnerEmail('');
     setNewOwnerPhone('');
     setNewStoreName('');
+    setBusinessType('store');
     setShowCreateModal(false);
   };
 
@@ -244,7 +247,6 @@ function UsersPage({
                     onChange={(e) => setNewOwnerPhone(e.target.value)}
                   />
                 </div>
-
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   <label style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 600 }}>Assigned Store Name</label>
                   <input 
@@ -255,6 +257,26 @@ function UsersPage({
                     onChange={(e) => setNewStoreName(e.target.value)}
                     required
                   />
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <label style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 600 }}>Business Nature</label>
+                  <select 
+                    value={businessType}
+                    onChange={(e) => setBusinessType(e.target.value)}
+                    style={{
+                      background: 'var(--bg-secondary)',
+                      border: '1px solid var(--border-color)',
+                      color: '#fff',
+                      padding: '10px',
+                      borderRadius: '8px',
+                      fontSize: '13px'
+                    }}
+                  >
+                    <option value="store">Pet Store / Grooming / Boarding</option>
+                    <option value="vet_clinic">Veterinary Clinic</option>
+                    <option value="both">Both (Store & Veterinary Clinic)</option>
+                  </select>
                 </div>
               </div>
 

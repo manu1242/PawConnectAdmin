@@ -243,7 +243,8 @@ function App() {
         email: ownerData.email,
         phone: ownerData.phone,
         password: compliantPassword,
-        role: 'manager'
+        role: 'manager',
+        businessType: ownerData.businessType
       });
 
       if (res.data.success) {
