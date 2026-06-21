@@ -565,7 +565,11 @@ function App() {
           )}
 
           {activeTab === 'permissions' && (
-            <PermissionsPage />
+            <PermissionsPage 
+              users={users}
+              onUpdatePermissions={handleEditUser}
+              loading={loading}
+            />
           )}
         </main>
 
