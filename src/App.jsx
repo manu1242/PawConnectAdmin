@@ -15,6 +15,7 @@ import AuditLogsPage from './pages/AuditLogs';
 import PermissionsPage from './pages/Permissions';
 import PromosPage from './pages/Promos';
 import BannersPage from './pages/Banners';
+import RegistrationRequestsPage from './pages/RegistrationRequests';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('admin_token') || null);
@@ -22,6 +23,7 @@ function App() {
   
   // Tab states
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [registrationRequests, setRegistrationRequests] = useState([]);
   const [dateRange, setDateRange] = useState('7days');
   const userRole = user?.role || 'superadmin';
 
@@ -89,6 +91,16 @@ function App() {
       const bannersRes = await api.get('/banners');
       if (bannersRes.data.success && bannersRes.data.data?.banners) {
         setBanners(bannersRes.data.data.banners);
+      }
+
+      // Fetch partner registration requests
+      try {
+        const reqsRes = await api.get('/registration-requests');
+        if (reqsRes.data.success && reqsRes.data.data?.requests) {
+          setRegistrationRequests(reqsRes.data.data.requests);
+        }
+      } catch (reqErr) {
+        console.error('Failed to load partner requests:', reqErr);
       }
     } catch (err) {
       console.error('Failed to load real data from backend:', err);
@@ -196,6 +208,25 @@ function App() {
       console.error(err);
       showAlert('danger', err.response?.data?.message || 'Failed to update featured status.');
     }
+  };
+
+  // Action: Update Partner Registration Request Status
+  const handleUpdateRegistrationRequestStatus = async (requestId, payload) => {
+    setLoading(true);
+    try {
+      const res = await api.patch(`/registration-requests/${requestId}/status`, payload);
+      if (res.data.success) {
+        showAlert('success', res.data.message || 'Registration request status updated.');
+        loadDatabaseData();
+        return res.data;
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert('danger', err.response?.data?.message || 'Failed to update registration status.');
+    } finally {
+      setLoading(false);
+    }
+    return null;
   };
 
   // Action: Delete Store
@@ -511,6 +542,14 @@ function App() {
                 }
                 handleUpdateStoreStatus(id, 'rejected', reason.trim());
               }}
+            />
+          )}
+
+          {activeTab === 'registrationRequests' && (
+            <RegistrationRequestsPage 
+              requests={registrationRequests}
+              onUpdateStatus={handleUpdateRegistrationRequestStatus}
+              loading={loading}
             />
           )}
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { 
   Activity, 
   Users, 
@@ -8,12 +7,14 @@ import {
   Settings, 
   LogOut,
   Tag,
-  Image
+  Image,
+  FileCheck
 } from 'lucide-react';
 
 function Sidebar({ activeTab, setActiveTab, onLogout, userRole, onRoleSwitch }) {
   const menuItems = [
     { id: 'dashboard', name: 'Dashboard', icon: Activity },
+    { id: 'registrationRequests', name: 'Partner Requests', icon: FileCheck },
     { id: 'users', name: 'User Management', icon: Users },
     { id: 'stores', name: 'Store Control', icon: Store },
     { id: 'bookings', name: 'Bookings Manager', icon: Calendar },
