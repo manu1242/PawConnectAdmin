@@ -430,6 +430,7 @@ function RegistrationRequestsPage({ requests, onUpdateStatus, loading }) {
                     className="btn-secondary" 
                     style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }}
                     onClick={() => setShowRejectForm(true)}
+                    disabled={loading}
                   >
                     Reject Application
                   </button>
@@ -439,15 +440,15 @@ function RegistrationRequestsPage({ requests, onUpdateStatus, loading }) {
               <div style={{ display: 'flex', gap: 10 }}>
                 {selectedReq.status !== 'approved' && (
                   <>
-                    <button className="btn-secondary" onClick={handleRequestInfo}>
+                    <button className="btn-secondary" onClick={handleRequestInfo} disabled={loading}>
                       Need More Info
                     </button>
-                    <button className="btn-primary" onClick={handleApprove} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <Check size={16} /> Approve & Provision Account
+                    <button className="btn-primary" onClick={handleApprove} style={{ display: 'flex', alignItems: 'center', gap: 6 }} disabled={loading}>
+                      {loading ? 'Approving...' : <><Check size={16} /> Approve & Provision Account</>}
                     </button>
                   </>
                 )}
-                <button className="btn-secondary" onClick={() => setSelectedReq(null)}>
+                <button className="btn-secondary" onClick={() => setSelectedReq(null)} disabled={loading}>
                   Close
                 </button>
               </div>
